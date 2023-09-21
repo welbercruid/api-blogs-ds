@@ -1,6 +1,7 @@
 const userModel = require('../schemas/users');
 const blogsModel = require('../schemas/blogs');
 const { uploadImage, deleteImage } =  require ('../utils/cloudinary');
+const fse = require('fs-extra');
 
 const profile = async (req, res) => {
     try { 
@@ -22,7 +23,13 @@ const createBlog = async (req, res) => {
         //console.log("el blog: ", blog);
 
         if (req.files?.image) {
-            const result = await uploadImage(req.files.image.tempFilePath)
+            const result = await uploadImage(req.files.image.tempFilePath);
+            blog.image = {
+                public_id: result.public_id,
+                secure_url: result.secure_url
+            }
+            //recibe un parametro que es donde está el archivo que quiero eliminar
+            await fse.unlink(req.files.image.tempFilePath);
             console.log(result);
         }
         await blog.save();
@@ -104,7 +111,10 @@ const delBlog = async (req, res) => {
             return res.status(401).json({ msj: "No estás autorizado para eliminar este blog." });
         }
         const deletedBlog = await blogsModel.findByIdAndDelete(id, req.body, {new: true});
-        res.status(200).json({msj: "Se eliminó correctamente el blog."});
+        const result = await deleteImage(blog.image.public_id);
+        console.log(result);
+
+        res.status(200).json({msj: "Se eliminó correctamente el blog.", blog});
     } catch (error) {
         console.error(error);
         res.status(500).json({msj: "Error al buscar."});
