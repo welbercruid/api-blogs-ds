@@ -1,5 +1,6 @@
 const userModel = require('../schemas/users');
 const blogsModel = require('../schemas/blogs');
+const { uploadImage, deleteImage } =  require ('../utils/cloudinary');
 
 const profile = async (req, res) => {
     try { 
@@ -12,13 +13,18 @@ const profile = async (req, res) => {
 
 const createBlog = async (req, res) => {
     try {
-        let { title, description, image } = req.body;
-
+        let { title, description/* , image */ } = req.body;
+        console.log(req.files);//*
         const { id } = req.user;
         const user = await userModel.findById(id);
         //console.log("el body ", req.body);
-        const blog = new blogsModel({ title, description, image, active: true, user: req.user._id, author: `${user.name} ${user.lastname}`, username: user.username });
+        const blog = new blogsModel({ title, description,/*  image, */ /* active: true,  */user: req.user._id, author: `${user.name} ${user.lastname}`, username: user.username });
         //console.log("el blog: ", blog);
+
+        if (req.files?.image) {
+            const result = await uploadImage(req.files.image.tempFilePath)
+            console.log(result);
+        }
         await blog.save();
         //console.log("el blog save: ", blog);        
         //console.log(Array.isArray(req.user.blogs));   //false

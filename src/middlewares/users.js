@@ -21,7 +21,7 @@ const validateIdBlog = async (req, res, next) => {
     next();
 }
 
-const restrictProperties = (req, res, next) => {
+const restrictPropertiesBlog = (req, res, next) => {
     try {
         const restrictProps = ["active", "author", "username"];
         const props = Object.keys(req.body);
@@ -29,12 +29,26 @@ const restrictProperties = (req, res, next) => {
         if (hasRestrictedProps) {
             return res.status(400).json({error: "No se pueden modificar ciertas propiedades"});
         }
+
+        const { title, description, image, ... extraProp} = req.body;
+        const allowedProps = ["title", "description", "image"];
+        for(const prop in extraProp) {
+            if (!allowedProps.includes(prop)) {
+                return res.status(400).json({mensaje: `La propiedad ${prop} no está permitida.`})
+            }
+        }
+
+        if (allowedProps.length !== 3) {//ver si interfiere en editarBlog
+            return res.status(404).json({
+                msj: "Falta data."
+            });
+        }
     } catch (error) {
         console.error(error);
         return res.status(500).json({msj: "Error de servidor"});
     }    
-    console.log("middleware restrictProperties");
+    console.log("middleware restrictPropertiesBlog");
     next();
 }
 
-module.exports = {validateIdBlog, restrictProperties}
+module.exports = {validateIdBlog, restrictPropertiesBlog}

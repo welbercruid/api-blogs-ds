@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const config = require('../config/config');
+const config = require('../config');
 //const autopopulate = require('mongoose-autopopulate');
 
 const usersSchema = new mongoose.Schema({

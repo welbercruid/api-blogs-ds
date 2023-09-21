@@ -4,7 +4,7 @@ const blogsSchema = new mongoose.Schema({
     active: {type: Boolean, default: true},
     title: {type: String, required: true},
     description: {type: String, required: true},
-    image: String,//{type: String, required: false},    
+    image: String,//{/* secure_url: String, public_id: String,  */type: String,required: true}, //String,
     author: String, 
     username: String,
     user: {type: mongoose.Schema.Types.ObjectId, ref: "Users"},

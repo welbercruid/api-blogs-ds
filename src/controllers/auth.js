@@ -1,6 +1,6 @@
 const userModel = require('../schemas/users');
 const jwt = require('jsonwebtoken');
-const config = require('../config/config');
+const config = require('../config');
 
 const register = async (req, res) => {
     try {
@@ -22,7 +22,7 @@ const login = async (req, res) => {
         const stateUser = await userModel.findOne(user);
 
         if (stateUser.active === false) {
-            return res.status(401).json({ msj: "Cuenta bloqueda por marmota" });
+            return res.status(401).json({ msj: `Cuenta bloqueada.` });
         }
         
         const token = jwt.sign(

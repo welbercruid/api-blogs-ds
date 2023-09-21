@@ -1,10 +1,14 @@
-const config = require('./config/config');
+const config = require('./config');
 const express = require('express');
-const { dbConnect } = require('./config/mongo');
-
+const { dbConnect } = require('./utils/mongo');
+const fileUpload = require('express-fileupload');//*
 const app = express();
 app.use(express.json());
 
+app.use(fileUpload({//*
+    useTempFiles : true,
+    tempFileDir : './uploads'
+}));
 app.get('/', (req, res) => {
     res.send("Bienvenidos a mi blogs!");
 });
