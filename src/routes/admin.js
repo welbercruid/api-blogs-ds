@@ -10,7 +10,7 @@ router.use(adminMiddlewares.logged);
 router.get('/', adminControllers.get);
 router.get('/id/:id', adminMiddlewares.validateID, adminControllers.get);
 router.get('/check', adminControllers.adminCheck);
-router.patch('/user/:id',adminMiddlewares.validateID, adminControllers.changeStateUser);
-router.patch('/blog/:id', adminControllers.changeStateBlog);
+router.patch('/userstate/:id',adminMiddlewares.validateID, adminControllers.changeStateUser);
+router.patch('/blogstate/:id', adminControllers.changeStateBlog);
 
 module.exports = router;

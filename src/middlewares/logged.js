@@ -30,4 +30,4 @@ const dataFromToken = async (token) => {
     }
 }
 
-module.exports = logged 
+module.exports = logged

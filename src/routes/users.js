@@ -6,9 +6,9 @@ const usersMiddlewares = require('../middlewares/users');
 const fileUpload = require('express-fileupload');//*
 
 router.use(logged);
-
+//router.use(usersMiddlewares.userBloqued);
 router.get('/profile', usersControllers.profile);
-router.post('/createblog', /* usersMiddlewares.restrictPropertiesBlog, */       fileUpload({
+router.post('/createblog', usersMiddlewares.restrictPropertiesBlog,       fileUpload({
             useTempFiles : true,
             tempFileDir : './uploads'
 }), usersControllers.createBlog);

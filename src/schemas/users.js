@@ -30,9 +30,12 @@ usersSchema.pre('save', async function(next) {
 });
 
 usersSchema.statics.findByCredentials = async function (username, password) {
-    const user = await this.findOne({username}).select('_id username password admin');
+    const user = await this.findOne({username, /* active: true */}).select('+password'); //.select('_id username password admin');
     if (!user) {
         throw new Error("No autorizadou.");
+    }
+    if (user.active === false) {
+        throw new Error("Cuenta bloqueada!");
     }
     const match = await bcrypt.compare(password, user.password);
     if (!match) {

@@ -3,7 +3,7 @@
 //     next();
 // };
 
-const validateData = (req, res, next) => {
+const validateData = async (req, res, next) => {
     const { name, lastname, email, username, password, ... extraProp} = req.body;
     if (!name || !lastname || !email || !username || !password) {
         console.log(`Falta data (${req.body})`);

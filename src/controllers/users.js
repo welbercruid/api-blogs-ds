@@ -14,13 +14,18 @@ const profile = async (req, res) => {
 
 const createBlog = async (req, res) => {
     try {
-        let { title, description/* , image */ } = req.body;
-        console.log(req.files);//*
+        let { title, description, image } = req.body;console.log("el body", req.body)
+        //console.log(req.files);//*
         const { id } = req.user;
         const user = await userModel.findById(id);
         //console.log("el body ", req.body);
-        const blog = new blogsModel({ title, description,/*  image, */ /* active: true,  */user: req.user._id, author: `${user.name} ${user.lastname}`, username: user.username });
+        const blog = new blogsModel({ title, description, image, /* active: true,  */user: req.user._id, author: `${user.name} ${user.lastname}`, username: user.username });
         //console.log("el blog: ", blog);
+        //Para que no suba las imagenes si ya hay un title creado.
+        const existingBlog = await blogsModel.findOne({title});
+        if (existingBlog) {
+            return res.status(400).json({msj: "Título no disponible."})
+        }
 
         if (req.files?.image) {
             const result = await uploadImage(req.files.image.tempFilePath);
@@ -58,7 +63,7 @@ const editBlog = async (req, res) => {
         }
         
         if (blog.active === false) {
-            return res.status(401).json({ msj: "Blog bloquedo. No se puede acceder" });
+            return res.status(401).json({ msj: "Blog bloquedo. No se puede acceder para editar." });
         }
         const updatedBlog = await blogsModel.findByIdAndUpdate(id, req.body, { new: true });
         res.status(200).json({ msj: "Se actualizó el blog.", blog });
@@ -110,8 +115,12 @@ const delBlog = async (req, res) => {
         if (blog.username !== req.user.username) {
             return res.status(401).json({ msj: "No estás autorizado para eliminar este blog." });
         }
+
+        if (blog.active === false) {
+            return res.status(401).json({ msj: "Blog bloquedo. No se puede acceder para eliminar." });
+        }
         const deletedBlog = await blogsModel.findByIdAndDelete(id, req.body, {new: true});
-        const result = await deleteImage(blog.image.public_id);
+        const result = await deleteImage(blog.image.public_id);//** */
         console.log(result);
 
         res.status(200).json({msj: "Se eliminó correctamente el blog.", blog});
