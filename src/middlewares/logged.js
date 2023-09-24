@@ -1,5 +1,6 @@
 const config = require('../config');
 const jwt = require('jsonwebtoken');
+const userModel = require('../schemas/users');
 
 const logged = async (req, res, next) => {
     try {
@@ -9,13 +10,16 @@ const logged = async (req, res, next) => {
 
         const token = bearerToken.split(' ')[1]; 
         //console.log("token: ",token);
-        const user = await dataFromToken(token);
-        //console.log("el user", user);
-        if(!user || !user.id) return res.status(401).json({msj: "Autenticación fallida. bad token"});
-
+        const user = await dataFromToken(token);        
+        const stateUser = await userModel.searchStateUser(user.id);
+        
+        if(!user || !user.id) return res.status(401).json({msj: "Autenticación fallida. bad token"});        
+       
+        if (stateUser === false) return res.status(401).json({msj: "Usuario bloqueado desde middle"});
         req.user = user;
         next();
     } catch (error) {
+        console.error(error);
         /* if (!user)  */return res.status(500).json({ msj: "Error inesperado. logged"});
     }
 }
@@ -23,7 +27,6 @@ const logged = async (req, res, next) => {
 const dataFromToken = async (token) => {
     try {
         const data = jwt.verify(token, config.TOKEN_SECRET);
-        //console.log("data", data);
         return data;        
     } catch (error) {
         throw error;

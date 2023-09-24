@@ -14,19 +14,18 @@ const profile = async (req, res) => {
 
 const createBlog = async (req, res) => {
     try {
-        let { title, description, image } = req.body;console.log("el body", req.body)
+        let { title, description, image } = req.body;//console.log("el body", req.body)
         //console.log(req.files);//*
         const { id } = req.user;
         const user = await userModel.findById(id);
-        //console.log("el body ", req.body);
-        const blog = new blogsModel({ title, description, image, /* active: true,  */user: req.user._id, author: `${user.name} ${user.lastname}`, username: user.username });
-        //console.log("el blog: ", blog);
+        const blog = new blogsModel({ title, description, image, user: req.user._id, author: `${user.name} ${user.lastname}`, username: user.username });
+        
         //Para que no suba las imagenes si ya hay un title creado.
         const existingBlog = await blogsModel.findOne({title});
         if (existingBlog) {
             return res.status(400).json({msj: "Título no disponible."})
         }
-
+        //si incluye una imagen la cargo y guardo la info de la misma en un objeto
         if (req.files?.image) {
             const result = await uploadImage(req.files.image.tempFilePath);
             blog.image = {
@@ -37,14 +36,9 @@ const createBlog = async (req, res) => {
             await fse.unlink(req.files.image.tempFilePath);
             console.log(result);
         }
-        await blog.save();
-        //console.log("el blog save: ", blog);        
-        //console.log(Array.isArray(req.user.blogs));   //false
-        //user.blogs = user.blogs.concat(blog._id);
-        //console.log(Array.isArray(user.blogs));   //true
-        console.log("el blog: ", blog);
+        await blog.save();        
+       
         user.blogs.push(blog); // pushear el blog y no solo su id
-        //await req.user.save();
         await user.save();
         res.status(201).json({ blog });
     } catch (error) {
@@ -66,7 +60,7 @@ const editBlog = async (req, res) => {
             return res.status(401).json({ msj: "Blog bloquedo. No se puede acceder para editar." });
         }
         const updatedBlog = await blogsModel.findByIdAndUpdate(id, req.body, { new: true });
-        res.status(200).json({ msj: "Se actualizó el blog.", blog });
+        res.status(200).json({ msj: "Se actualizó el blog.", updatedBlog });
     } catch (error) {
         console.error(error);
         res.status(500).json({ msj: "Error al buscar." });

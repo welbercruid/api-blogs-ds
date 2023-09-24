@@ -20,9 +20,10 @@ const login = async (req, res) => {
         const {username, password} = req.body;
         const user = await userModel.findByCredentials(username, password);        
         const stateUser = await userModel.findOne(user);
-
+        const correoAdmin = await userModel.searchMailAdmin();
+        
         if (stateUser.active === false) {
-            return res.status(401).json({ msj: `Cuenta bloqueada.` });
+            return res.status(401).json({ msj: `Cuenta bloqueada. Comunicarse al correo ${correoAdmin}` });
         }
         
         const token = jwt.sign(
