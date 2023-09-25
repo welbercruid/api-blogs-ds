@@ -1,5 +1,5 @@
 const cloudinary = require('cloudinary').v2;
-const config = require('../config');
+const config = require('.');
 
 cloudinary.config({
     cloud_name: config.CLOUDINARY_CLOUD_NAME,
@@ -7,7 +7,7 @@ cloudinary.config({
     api_secret: config.CLOUDINARY_API_SECRET,
     secure: true
 });
-
+console.log(cloudinary.config().cloud_name);
 const uploadImage = async (filePath) => {
     return await cloudinary.uploader.upload(filePath, {
         folder : 'blogs-ds'

@@ -1,6 +1,6 @@
 const config = require('./config');
 const express = require('express');
-const { dbConnect } = require('./utils/mongo');
+const { dbConnect } = require('./config/mongo');
 
 const app = express();
 app.use(express.json());

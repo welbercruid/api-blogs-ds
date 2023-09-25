@@ -1,6 +1,6 @@
 const userModel = require('../schemas/users');
 const blogsModel = require('../schemas/blogs');
-const { uploadImage, deleteImage } =  require ('../utils/cloudinary');
+const { uploadImage, deleteImage } =  require ('../config/cloudinary');
 const fse = require('fs-extra');
 
 const profile = async (req, res) => {
