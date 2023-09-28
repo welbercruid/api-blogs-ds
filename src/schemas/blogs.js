@@ -10,7 +10,7 @@ const blogsSchema = new mongoose.Schema({
     author: String, 
     username: String,
     user: {type: mongoose.Schema.Types.ObjectId, ref: "Users"},
-    }, {timestamps: true}
+    }, {timestamps: { currentTime: ()=> new Date(Date.now() - 180 * 60 * 1000) }}
 );
 
 blogsSchema.pre('save', async function (next) {

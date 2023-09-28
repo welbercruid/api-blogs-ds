@@ -6,6 +6,8 @@ const fse = require('fs-extra');
 const profile = async (req, res) => {
     try { 
         const user = await userModel.findOne({_id: req.user.id}).populate('blogs');
+        const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+        console.log("el token profile ", token);
         res.status(200).json({msj: "Mi perfil", user});
     } catch (error) {
         res.status(500).json({msj: "Error al mostrar el perfil."});
@@ -66,41 +68,7 @@ const editBlog = async (req, res) => {
         res.status(500).json({ msj: "Error al buscar." });
     }
 }
-// const editBlog = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         //console.log("el id ", id);
-//         const blog = await blogsModel.findById(id).populate('user');
-//         //console.log("el blog ",blog);
-//         if (!blog) {
-//             return res.status(404).json({ msj: "Blog no encontrado." });
-//         }
-//         //console.log("el blog._id ", blog._id);//object
-//         console.log("el blog._id to string", blog._id.toString()); // o blog.id
-//         console.log("el req.user ", req.user);
-//         console.log("el req.user.id: editor ", req.user.id);//string
-//         console.log("el blog ", blog);//string el editor
-//         //console.log("el blog.user._id.toString() ", blog.user.toString());
-//         console.log("el blog populate ", blog.populate('user'));
-//         console.log("el req.user.username: editor ", req.user.username); //este
-//         console.log("el blog.username ", blog.username); // este
-//         //const { id2 } = req.user;
-//         //console.log("el req.user: ", req.user); // su id '6508c04e8dd424d043eeae63'
-//         const us = await userModel.findById(id2);
 
-//         if (blog.user.toString() !== req.user.id) {
-//             return res.status(401).json({ msj: "No estás autorizado para editar este blog." });
-//         }
-//         const updatedBlog = await blogsModel.findByIdAndUpdate(id, req.body, { new: true });
-//         res.status(200).json({ msj: "Se actualizó el blog." });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ msj: "Error al buscar." })
-//     }
-// }
-//         if (blog.user.toString() !== req.user._id.toString()) {
-//             return res.status(401).json({ msj: "No estás autorizado para editar este blog." });
-//         }
 const delBlog = async (req, res) => {
     try {
         const {id} = req.params;

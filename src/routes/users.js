@@ -10,8 +10,8 @@ router.use(logged);
 router.get('/profile', usersControllers.profile);
 router.post('/createblog', usersMiddlewares.restrictPropertiesBlog, 
     fileUpload({
-        useTempFiles : true,
-        tempFileDir : './uploads'
+        useTempFiles : true,  //para indicar que se deben utilizar archivos temporales
+        tempFileDir : './uploads' // ./uploads para indicar la carpeta donde se almacenarán los archivos temporales
     }), usersControllers.createBlog);
 router.put('/:id', usersMiddlewares.validateIdBlog, usersMiddlewares.restrictPropertiesBlog, usersControllers.editBlog);
 router.delete('/:id', usersMiddlewares.validateIdBlog, usersControllers.delBlog);

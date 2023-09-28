@@ -1,15 +1,19 @@
 const config = require('../config');
 const jwt = require('jsonwebtoken');
 const userModel = require('../schemas/users');
+const { sessions } = require('../controllers/auth');
 
 const logged = async (req, res, next) => {
     try {
-        const bearerToken = req.header('authorization');
+        const bearerToken = req.headers.authorization; //req.header('authorization');
         //console.log(bearerToken);
         if (!bearerToken) return res.status(401).json({msj: "Autenticación fallida. no token"});
 
-        const token = bearerToken.split(' ')[1]; 
+        const token = bearerToken && bearerToken.split(' ')[1];
         //console.log("token: ",token);
+        if (sessions.indexOf(token) === -1) {
+            return res.status(401).json({ error: 'Token expirado o inválido' });
+        }
         const user = await dataFromToken(token);        
         const stateUser = await userModel.searchStateUser(user.id);
         

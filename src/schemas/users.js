@@ -11,7 +11,7 @@ const usersSchema = new mongoose.Schema({
     admin: Boolean,
     active: {type: Boolean, default: true},
     blogs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Blogs'}]
-    }, {timestamps: true}
+    }, {timestamps: { currentTime: ()=> new Date(Date.now() - 180 * 60 * 1000) }}
 );
 
 usersSchema.pre('save', async function(next) {

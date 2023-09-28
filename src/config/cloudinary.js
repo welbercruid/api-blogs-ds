@@ -7,7 +7,7 @@ cloudinary.config({
     api_secret: config.CLOUDINARY_API_SECRET,
     secure: true
 });
-console.log(cloudinary.config().cloud_name);
+//console.log(cloudinary.config().cloud_name);
 const uploadImage = async (filePath) => {
     return await cloudinary.uploader.upload(filePath, {
         folder : 'blogs-ds'
