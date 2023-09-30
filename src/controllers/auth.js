@@ -51,6 +51,7 @@ const logout = async (req, res) => {
         if (index !== -1) {//si está en el array lo remuevo
             sessions.splice(index, 1);
             console.log(`Token removido de sessions. ${token}`);
+            console.log("sessions desde logout", sessions);
             return res.status(200).json({msj: "Sesión cerrada correctamente."});
         } 
         if (index === -1){//si no está
